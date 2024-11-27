@@ -1,39 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron')
-const sharp = require('sharp');
-const fs = require("fs");
 const { exec } = require('child_process');
-const { fromEvent } = require('file-selector');
-
-const config = {
-    catalogLocation: "./catalog"
-}
-
-const createWindow = () => {
-    const win = new BrowserWindow({
-        width: 1200,
-        height: 800,
-        webPreferences: {
-            nodeIntegration: true,
-            contextIsolation: false
-        }
-    })
-
-    ipcMain.on("openPicker", async (event, e) => {
-        const files = await fromEvent(e);
-        console.log(files);
-        return files;
-    })
-
-    win.loadFile('app/index.html')
-}
-
-app.whenReady().then(() => {
-    createWindow()
-})
-
-app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') app.quit()
-})
 
 function generatePPM(input, output) {
     exec(`dcraw -w -o 1 -q 3 ${input}`, async (err, stdout, stderr) => {
