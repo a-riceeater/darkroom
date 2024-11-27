@@ -3,12 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>darkroom</title>
 
     <link rel="stylesheet" href="./index.css">
 </head>
 <body>
-    <img src="./photo.ppm" alt="">
+    <div class="topbar">
+        <span class="tb-logo">darkroom</span>
+        <span class="tb-opt" id="tbo-lib">Library</span>
+        <span class="tb-opt-sep">|</span>
+        <span class="tb-opt" id="tbo-dev">Develop</span>
+    </div>
+    <div class="library-pannel">
+        <div class="top">
+            <span id="t-l">Library</span>
+            <input type="checkbox" id="tl-count">
+            <label for="tl-count">Show photo count</label>
+            <button id="tl-import">Import Photos</button>
+        </div>
+        <div class="library">
+            <div class="lp-image">
+                <img src="./photo.thumb.jpg" alt="asd.jpg">
+                <span class="lp-num">1</span>
+            </div>
+        </div>
+        
+    </div>
     <script src="./index.js"></script>
 </body>
 </html>

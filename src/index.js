@@ -2,12 +2,15 @@ const { app, BrowserWindow } = require('electron')
 const sharp = require('sharp');
 const fs = require("fs");
 const { exec } = require('child_process');
-const im = require('imagemagick');
-/*
+
+const config = {
+    catalogLocation: "./catalog"
+}
+
 const createWindow = () => {
     const win = new BrowserWindow({
-        width: 800,
-        height: 600
+        width: 1200,
+        height: 800
     })
 
     win.loadFile('app/index.html')
@@ -19,7 +22,7 @@ app.whenReady().then(() => {
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit()
-})*/
+})
 
 function generatePPM(input, output) {
     exec(`dcraw -w -o 1 -q 3 ${input}`, async (err, stdout, stderr) => {
@@ -27,6 +30,16 @@ function generatePPM(input, output) {
         if (err) {
             console.error(`Error converting RAW file: ${stderr}`);
             return;
+        }
+    })
+}
+
+function generateSmallJPG(input) {
+    exec(`dcraw -e ${input}`, async (err, stdout, stderr) => {
+        // this command is faster and creates a "thumbnail" jpeg version
+        if (err) {
+            console.error(`Error creating thumbnail, ${stderr}`)
+            return
         }
     })
 }
