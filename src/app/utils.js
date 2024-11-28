@@ -3,7 +3,8 @@ const fs = require("fs")
 const path = require("path")
 
 const config = {
-    catalogLocation: path.join(__dirname, "../", "catalog")
+    catalogLocation: path.join(__dirname, "../", "catalog"),
+    previewLocation: path.join(__dirname, "../previews")
 }
 
 function generatePPM(input, output) {
@@ -27,10 +28,10 @@ function generateSmallJPG(input, cb) {
         const fn = `${input.replace(input.split(".").pop(), "")}thumb.jpg`;
 
         // fn.replace removes the path (just gets filename)
-        fs.rename(fn, path.join(config.catalogLocation, fn.replace(/^.*[\\/]/, '')), (err) => {
-            if (err) console.error(err)
+        fs.rename(fn, path.join(config.previewLocation, fn.replace(/^.*[\\/]/, '')), (err) => {
+            if (err) return console.error(err)
+            cb(path.join(config.previewLocation, fn.replace(/^.*[\\/]/, '')))
         })
-        cb(path.join(config.catalogLocation, fn.replace(/^.*[\\/]/, '')))
     })
 }
 
