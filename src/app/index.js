@@ -12,7 +12,14 @@ document.addEventListener("keydown", async (e) => {
             const files = await ipcRenderer.invoke("dialog:openPicker")
 
             for (let i = 0; i < files.length; i++) {
-                generateSmallJPG(files[i])
+                await generateSmallJPG(files[i], (p) => {
+                    const ele = document.createElement("div");
+                    ele.classList.add("lp-image")
+                    ele.innerHTML = `
+                    <img src="${p}" alt="asd.jpg">
+                    <span class="lp-num">${i + 1}</span>`
+                    document.querySelector(".library").appendChild(ele)
+                })
             }
 
         } catch (error) {

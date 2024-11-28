@@ -3,7 +3,7 @@ const fs = require("fs")
 const path = require("path")
 
 const config = {
-    catalogLocation: "./catalog"
+    catalogLocation: path.join(__dirname, "../", "catalog")
 }
 
 function generatePPM(input, output) {
@@ -16,7 +16,7 @@ function generatePPM(input, output) {
     })
 }
 
-function generateSmallJPG(input) {
+function generateSmallJPG(input, cb) {
     exec(`dcraw -e "${input}"`, async (err, stdout, stderr) => {
         // this command is faster and creates a "thumbnail" jpeg version (less quality, basically if camera captured in JPEG)
         if (err) {
@@ -30,6 +30,7 @@ function generateSmallJPG(input) {
         fs.rename(fn, path.join(config.catalogLocation, fn.replace(/^.*[\\/]/, '')), (err) => {
             if (err) console.error(err)
         })
+        cb(path.join(config.catalogLocation, fn.replace(/^.*[\\/]/, '')))
     })
 }
 

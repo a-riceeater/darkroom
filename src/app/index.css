@@ -34,6 +34,7 @@ body {
     align-items: center;
     justify-content: center;
     position: relative;
+    float: left;
 }
 
 .lp-image > img {
