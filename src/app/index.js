@@ -2,21 +2,17 @@ function importPhotos(directory) {
 
 }
 
-const { ipcRenderer } = require("electron")
+const { ipcRenderer, dialog } = require("electron")
 const { fromEvent } = require('file-selector');
 
 document.addEventListener("keydown", async (e) => {
     if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key == "i") {
         try {
             // idk how to handle files that are only images since raw returns type blank so idk
-            const handles = await window.showOpenFilePicker({
-                multiple: true
-            });
-            const files = await fromEvent(handles);
-            console.log(files);
+            const files = await ipcRenderer.invoke("dialog:openPicker")
 
             for (let i = 0; i < files.length; i++) {
-                generateSmallJPG(files[i].path)
+                generateSmallJPG(files[i])
             }
 
         } catch (error) {

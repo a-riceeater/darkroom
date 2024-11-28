@@ -1,14 +1,13 @@
-const { app, BrowserWindow, ipcMain } = require('electron')
+const { app, BrowserWindow, ipcMain, dialog } = require('electron')
 const sharp = require('sharp');
 const fs = require("fs");
 const { exec } = require('child_process');
-const { fromEvent } = require('file-selector');
 
 const config = {
     catalogLocation: "./catalog"
 }
 
-const createWindow = () => {
+const createWindow = async () => {
     const win = new BrowserWindow({
         width: 1200,
         height: 800,
@@ -18,13 +17,15 @@ const createWindow = () => {
         }
     })
 
-    ipcMain.on("openPicker", async (event, e) => {
-        const files = await fromEvent(e);
-        console.log(files);
-        return files;
+    ipcMain.handle("dialog:openPicker", async (event, e) => {
+        const result = await dialog.showOpenDialog(win, {
+            properties: ['openFile', 'multiSelections'], // Allow only files
+        });
+        return result.filePaths;
     })
 
     win.loadFile('app/index.html')
+    
 }
 
 app.whenReady().then(() => {
