@@ -7,13 +7,21 @@ const config = {
     previewLocation: path.join(__dirname, "../previews")
 }
 
-function generatePPM(input, output) {
+function generatePPM(input, cb) {
     exec(`dcraw -w -o 1 -q 3 "${input}"`, async (err, stdout, stderr) => {
         // this command takes the longest- should be used for each photo once when imported, then just keep the PPM for editing previews
         if (err) {
             console.error(`Error converting RAW file: ${stderr}`);
             return;
         }
+
+        const fn = `${input.replace(input.split(".").pop(), "")}ppm`;
+
+        // fn.replace removes the path (just gets filename)
+        fs.rename(fn, path.join(config.catalogLocation, fn.replace(/^.*[\\/]/, '')), (err) => {
+            if (err) return console.error(err)
+            cb(path.join(config.catalogLocation, fn.replace(/^.*[\\/]/, '')))
+        })
     })
 }
 
