@@ -1,5 +1,6 @@
 const { ipcRenderer, dialog } = require("electron")
 const { fromEvent } = require('file-selector');
+var currentPhoto = ""
 
 document.addEventListener("keydown", async (e) => {
     if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key == "i") {
@@ -13,23 +14,60 @@ document.addEventListener("keydown", async (e) => {
 
 document.querySelector("#tl-import").addEventListener("click", importPhotos)
 
+
 async function importPhotos() {
     const files = await ipcRenderer.invoke("dialog:openPicker")
 
+    const libEls = new Array(files.length)
+    const carEls = new Array(files.length)
+
     for (let i = 0; i < files.length; i++) {
+
         await generateSmallJPG(files[i], (p) => {
+            
             const ele = document.createElement("div");
             ele.classList.add("lp-image")
             ele.innerHTML = `
                     <img src="${p}" alt="${p.replace(/^.*[\\/]/, '')}">
                     <span class="lp-num">${i + 1}</span>`
-            document.querySelector(".library").appendChild(ele)
+            document.querySelector("#hidden").appendChild(ele)
+            libEls[i] = ele
+
+            const ele2 = document.createElement("div")
+            ele2.innerHTML = `
+            <img src="${p}" class="bbci-img" alt="Preview">`
+            ele2.classList.add("bbc-item")
+            if (i == 0) ele2.classList.add("selected");
+            document.querySelector("#hidden").appendChild(ele2)
+
+            carEls[i] = ele2
         })
+
         await generatePPM(files[i], (p) => {
             console.log("gen jpg", p)
-            generateJPG(p, p.replace("ppm", "jpg"))
+            generateJPG(p, p.replace("ppm", "jpg"), () => {
+                if (i == 0) {
+                    document.querySelector("#image-dv-main").src = p.replace("ppm", "jpg")
+                    currentPhoto = p
+                }
+                if (i == files.length - 1) {
+                    libEls.forEach((el) => {
+                        document.querySelector(".library").appendChild(el);
+                    });
+                    
+                    carEls.forEach((el) => {
+                        document.querySelector("#bb-car").appendChild(el);
+                    });
+                }
+            })
         })
     }
+
+    setTimeout(() => {
+        
+    })
+   
+
 }
 
 document.querySelector("#tbo-dev").addEventListener("click", () => {

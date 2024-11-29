@@ -43,7 +43,7 @@ function generateSmallJPG(input, cb) {
     })
 }
 
-function generateJPG(input, output) {
+function generateJPG(input, output, cb) {
     exec(`magick "${input}" "${output}"`, (err, stdout, stderr) => {
         // this one is fast, can be used for updating previews after changes to PPM are made
         // higher quality (bigger file size tho), keeps all details and more simialr to what the changes will look like after photo export.
@@ -51,5 +51,50 @@ function generateJPG(input, output) {
             console.error(`Error converting to JPEG: ${stderr}`);
             return;
         }
+        cb()
     })
 }
+
+function createHistogram() {
+    const barCount = 100;
+    const imageHeight = 200;
+
+    createCanvas(400, 400);
+    background(255);
+
+    img.resize(0, imageHeight);
+    imageMode(CENTER);
+    image(img, width / 2, imageHeight / 2);
+    img.loadPixels();
+
+    const histogram = new Array(barCount).fill(0);
+
+    for (let x = 0; x < img.width; x += 5) {
+        for (let y = 0; y < img.height; y += 5) {
+            const loc = (x + y * img.width) * 4;
+            const r = img.pixels[loc];
+            const g = img.pixels[loc + 1];
+            const b = img.pixels[loc + 2];
+            const a = img.pixels[loc + 3];
+            const barIndex = floor(barCount * b / 255);
+            histogram[barIndex]++;
+        }
+    }
+
+    fill(100, 100, 300);
+    strokeWeight(0);
+
+    const maxCount = max(histogram);
+
+    const barWidth = width / barCount;
+    const histogramHeight = height - imageHeight;
+
+    for (let i = 0; i < barCount; i++) {
+        const count = histogram[i];
+        const y1 = round(map(count, 0, maxCount, height, imageHeight));
+        const y2 = height;
+        const x1 = i * barWidth;
+        const x2 = x1 + barWidth;
+        rect(x1, y1, barWidth, height - y1);
+    }
+}  

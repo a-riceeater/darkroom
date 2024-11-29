@@ -6,6 +6,7 @@
     <title>darkroom</title>
 
     <link rel="stylesheet" href="./index.css">
+    <script src="./p5.js"></script>
     <script src="./utils.js"></script>
 </head>
 <body>
@@ -28,10 +29,18 @@
     <div class="develop-pannel pannel">
         <div class="presets-slide"></div>
         <div class="image-dv">
-            <img src="../catalog/Photo from mcb dslr 0676.jpg" alt="darkroom image preview" id="image-dv-main" draggable="false">
+            <img src="" alt="darkroom image preview - import photos to begin" id="image-dv-main" draggable="false">
         </div>
         <div class="config-slide"></div>
     </div>
+    <div class="bottom-bar">
+        <div id="bb-top">
+            <span style="color: lightgray; margin-left: 15px;">0 selected</span>
+        </div>
+        <div id="bb-car">
+        </div>
+    </div>
+    <div id="hidden" style="display: none"></div>
     <script src="./index.js"></script>
 </body>
 </html>
